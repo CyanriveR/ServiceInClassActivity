@@ -13,20 +13,20 @@ class MainActivity : AppCompatActivity() {
 
         lateinit var timerBinder : TimerService.TimerBinder
         var isconnected = false
-
+        val serviceConnection = object: ServiceConnection{
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            timerBinder = service as TimerService.TimerBinder
+            isconnected= true
+        }
+        override fun onServiceDisconnected(name: ComponentName?) {
+            isconnected = false
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val serviceConnection = object: ServiceConnection{
-            override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-                timerBinder = service as TimerService.TimerBinder
-                isconnected= true
-            }
-            override fun onServiceDisconnected(name: ComponentName?) {
-                isconnected = false
-            }
-        }
+
         bindService(
             Intent(this, TimerService::class.java),
             serviceConnection,
